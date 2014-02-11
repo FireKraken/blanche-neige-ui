@@ -16,7 +16,6 @@ function OnGUI(){
 		consoleText = consoleText+"\n[You] said: "+userInput;
         postMessage(userInput);
         userInput = "";	
-	
 	}
 	GUILayout.BeginArea(Rect (Screen.width *0.1, Screen.height *0.1, Screen.width *0.8, Screen.height *0.8));	
 	
@@ -33,7 +32,7 @@ function OnGUI(){
 			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(275));			
 			GUILayout.Box(consoleText, GUILayout.Width(250)); // Just your message as parameter.			
 			GUILayout.EndScrollView ();
-			
+						
 		}
 		
 		GUILayout.FlexibleSpace();
@@ -67,7 +66,7 @@ function OnGUI(){
 }
 
 function Update () {
-
+	
 }
 
 function postMessage(message:String){
@@ -77,5 +76,6 @@ function postMessage(message:String){
     var w = WWW(msgURL);
     yield w;	
     consoleText = consoleText+"\n[Snow White] said: "+w.text;
+    scrollPosition.y = Mathf.Infinity;
 
 }
