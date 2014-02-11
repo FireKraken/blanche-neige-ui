@@ -22,29 +22,31 @@ function OnGUI(){
 	
 	GUILayout.BeginVertical();
 			
-		GUI.skin.box.wordWrap = true; // set the wordwrap on for box only.
-		GUI.skin.box.alignment = TextAnchor.LowerLeft;
-		GUI.skin.label.alignment = TextAnchor.UpperCenter;
+		GUI.skin.box.wordWrap = true; // Set the wordwrap on for box only.
+		GUI.skin.box.alignment = TextAnchor.LowerLeft; // Text alignment for boxes
+		GUI.skin.label.alignment = TextAnchor.UpperCenter; // Text alignment
 		
-		if(showLog)
+		if(showLog) // Manages log window elements
 		{
 			GUILayout.Label("Log", GUILayout.Width(250));
 			
 			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(275));			
-			GUILayout.Box(consoleText, GUILayout.Width(250)); // just your message as parameter.			
+			GUILayout.Box(consoleText, GUILayout.Width(250)); // Just your message as parameter.			
 			GUILayout.EndScrollView ();
 			
 		}
 		
 		GUILayout.FlexibleSpace();
 		
+		// Text box for user input
 		userInput = GUILayout.TextField(userInput);
 		
+		// Horizontal field for "Log", "Reset" and "Rebuild" buttons
 		GUILayout.BeginHorizontal();
 		
 			if(GUILayout.Button("Log"))
 			{
-				showLog = !showLog;
+				showLog = !showLog; // Toggles log visibility
 			}
 			if(GUILayout.Button("Reset"))
 			{
@@ -65,8 +67,6 @@ function OnGUI(){
 }
 
 function Update () {
-
-
 
 }
 
