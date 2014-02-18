@@ -5,17 +5,30 @@ private var userInput : String = "[Type/dictate your answer]";
 private var consoleText : String;
 private var scrollPosition : Vector2 = Vector2.zero;
 private var showLog : boolean = false;
+// private var timeStamp : System.DateTime;
+// private var currentTime : String = null;
 
-function Start () {
+function Start () 
+{
 
 }
 
-function OnGUI(){
+function OnGUI()
+{
 
-	if (Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.Return)){
+	if (Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.Return))
+	{
+		/* // Recording timestamps for user inputs
+		timeStamp = System.DateTime.Now;
+		currentTime = String.Format("{0:D2}:{1:D2}:{2:D2}", timeStamp.Hour, timeStamp.Minute, timeStamp.Second);
+		
+		consoleText = consoleText+"\n["+currentTime+"] You said: "+userInput;
+		*/
+		
 		consoleText = consoleText+"\n[You] said: "+userInput;
         postMessage(userInput);
-        userInput = "";	
+        scrollPosition.y = Mathf.Infinity;
+        userInput = "";
 	}
 	GUILayout.BeginArea(Rect (Screen.width *0.1, Screen.height *0.1, Screen.width *0.8, Screen.height *0.8));	
 	
@@ -65,17 +78,27 @@ function OnGUI(){
 
 }
 
-function Update () {
+function Update () 
+{
 	
 }
 
-function postMessage(message:String){
+function postMessage(message:String)
+{
 
     var msgURL = ChatScripUrl+"message="+WWW.EscapeURL(message);
     print(msgURL);
     var w = WWW(msgURL);
-    yield w;	
-    consoleText = consoleText+"\n[Snow White] said: "+w.text;
+    yield w;
+    
+     /* // Recording time stamps for bot replies
+    timeStamp = System.DateTime.Now;
+	currentTime = String.Format("{0:D2}:{1:D2}:{2:D2}", timeStamp.Hour, timeStamp.Minute, timeStamp.Second);
+		
+	consoleText = consoleText+"\n["+currentTime+"] Snow White said: "+w.text;
+	*/
+	
+	consoleText = consoleText+"\n[Snow White] said: "+w.text;
     scrollPosition.y = Mathf.Infinity;
 
 }
