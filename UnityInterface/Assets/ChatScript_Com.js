@@ -48,16 +48,6 @@ function OnGUI()
 		GUI.skin.box.alignment = TextAnchor.MiddleLeft; // Text alignment for boxes
 		GUI.skin.label.alignment = TextAnchor.UpperCenter; // Text alignment
 		
-		if(showLog) // Manages log window elements
-		{
-			GUILayout.Label("Log", GUILayout.Width(250));
-			
-			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(275));			
-			GUILayout.Box(consoleText, GUILayout.Width(250)); // Post console text to the log.			
-			GUILayout.EndScrollView ();
-						
-		}
-		
 		// 	User text bubble		
 		var userPoint = Camera.main.WorldToScreenPoint(userTarget.position);
 	    userBubble.x = userPoint.x;
@@ -67,14 +57,24 @@ function OnGUI()
 	    // Bot text bubble
 	    var botPoint = Camera.main.WorldToScreenPoint(botTarget.position);
 	    botBubble.x = botPoint.x;
-	    botBubble.y = botPoint.y; // bottom left corner set to the 3D point
-	    GUI.Box(botBubble, botOutput); // display its name, or other string
+	    botBubble.y = botPoint.y;
+	    GUI.Box(botBubble, botOutput);
+	    
+	    if(showLog) // Manages log window elements
+		{
+			GUILayout.Label("Log", GUILayout.Width(250));
+			
+			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(275));			
+			GUILayout.Box(consoleText, GUILayout.Width(250)); // Post console text to the log.			
+			GUILayout.EndScrollView ();
+						
+		}
 		
 		GUILayout.FlexibleSpace();
 		
 		// Text box for user input
 		userInput = GUILayout.TextField(userInput);
-		
+				
 		// Horizontal field for "Log", "Reset" and "Rebuild" buttons
 		GUILayout.BeginHorizontal();
 		
@@ -110,6 +110,7 @@ function postMessage(message:String)
     var w = WWW(msgURL);
     yield w;
     botOutput = w.text; // Retrieve bot response for display in text bubble
+    
      /* // Recording time stamps for bot replies
     timeStamp = System.DateTime.Now;
 	currentTime = String.Format("{0:D2}:{1:D2}:{2:D2}", timeStamp.Hour, timeStamp.Minute, timeStamp.Second);
