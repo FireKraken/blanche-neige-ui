@@ -37,7 +37,6 @@ function OnGUI()
 		consoleText = consoleText+"\n[You] said: "+userInput;
         postMessage(userInput);
         userText = userInput;
-        scrollPosition.y = Mathf.Infinity;
         userInput = "";
 	}
 	GUILayout.BeginArea(Rect (Screen.width *0.1, Screen.height *0.1, Screen.width *0.8, Screen.height *0.8));	
@@ -46,7 +45,7 @@ function OnGUI()
 				
 		GUI.skin.box.wordWrap = true; // Set the wordwrap on for box only.
 		GUI.skin.box.alignment = TextAnchor.MiddleLeft; // Text alignment for boxes
-		GUI.skin.label.alignment = TextAnchor.UpperCenter; // Text alignment
+		GUI.skin.label.alignment = TextAnchor.MiddleCenter; // Text alignment
 		
 		// 	User text bubble		
 		var userPoint = Camera.main.WorldToScreenPoint(userTarget.position);
@@ -60,12 +59,14 @@ function OnGUI()
 	    botBubble.y = botPoint.y;
 	    GUI.Box(botBubble, botOutput);
 	    
+	    GUILayout.FlexibleSpace();
+	    
 	    if(showLog) // Manages log window elements
 		{
-			GUILayout.Label("Log", GUILayout.Width(250));
-			
-			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(275));			
-			GUILayout.Box(consoleText, GUILayout.Width(250)); // Post console text to the log.			
+			GUILayout.Label("Log", GUILayout.Width(550));
+				
+			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(575), GUILayout.Height(175));			
+			GUILayout.Box(consoleText, GUILayout.Width(550)); // Post console text to the log.		
 			GUILayout.EndScrollView ();
 						
 		}
