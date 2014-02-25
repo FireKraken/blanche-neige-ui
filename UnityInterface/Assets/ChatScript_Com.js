@@ -14,12 +14,36 @@ private var userBubble = Rect(0,0,500,100);
 private var botBubble = Rect(0,0,500,100);
 private var offset =  Vector2(0, 1.5); // height above the target position
 
+public var textDelay = 0.2;
+private var words : String = "Testing, testing, one two, one two";
+private var currentWords : String;
+
 // private var timeStamp : System.DateTime;
 // private var currentTime : String = null;
 
-function Start () 
+function Start ()
 {
+	
+}
 
+function AddText(newText : String)
+{
+    words = newText;
+    TypeText(words);
+}
+ 
+private function TypeText (compareWords : String) 
+{
+	currentWords = null;
+
+    for (var letter in compareWords.ToCharArray())
+    {
+        if (words != compareWords) break;
+        currentWords += letter;
+        // yield WaitForSeconds(textDelay);
+        yield WaitForSeconds(textDelay * Random.Range(0.01, 0.5)); // Original Random.Range(0.5, 2)
+    }  
+ 
 }
 
 function OnGUI()
@@ -57,7 +81,7 @@ function OnGUI()
 	    var botPoint = Camera.main.WorldToScreenPoint(botTarget.position);
 	    botBubble.x = botPoint.x;
 	    botBubble.y = botPoint.y;
-	    GUI.Box(botBubble, botOutput);
+	    GUI.Box(botBubble, currentWords);
 	    
 	    GUILayout.FlexibleSpace();
 	    
@@ -86,9 +110,11 @@ function OnGUI()
 			if(GUILayout.Button("Reset"))
 			{
 				 postMessage(":reset");
+				 userText = null;
 			}
 			if(GUILayout.Button("Rebuild")){
 				postMessage(":build 1");
+				userText = null;
 			}
 			
 		GUILayout.EndHorizontal();
@@ -98,7 +124,7 @@ function OnGUI()
 	GUILayout.EndArea();
 }
 
-function Update () 
+function Update ()
 {
 	
 }
@@ -110,7 +136,11 @@ function postMessage(message:String)
     print(msgURL);
     var w = WWW(msgURL);
     yield w;
+    consoleText = consoleText+"\n[Snow White] said: "+w.text;
+    scrollPosition.y = Mathf.Infinity;
+    
     botOutput = w.text; // Retrieve bot response for display in text bubble
+	AddText("\n\n"+botOutput);
     
      /* // Recording time stamps for bot replies
     timeStamp = System.DateTime.Now;
@@ -118,8 +148,4 @@ function postMessage(message:String)
 		
 	consoleText = consoleText+"\n["+currentTime+"] Snow White said: "+w.text;
 	*/
-	
-	consoleText = consoleText+"\n[Snow White] said: "+w.text;
-    scrollPosition.y = Mathf.Infinity;
-
 }
