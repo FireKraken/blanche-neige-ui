@@ -1,6 +1,6 @@
 ﻿#pragma strict
 
-private var ChatScripUrl= "http://127.0.0.1/chatscriptclient.php?";
+private var ChatScripUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptclient.php?";
 private var userInput : String = "[Type/dictate your answer]";
 private var userText : String = null;
 private var botOutput : String = null;
