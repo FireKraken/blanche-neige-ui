@@ -1,6 +1,8 @@
 ﻿#pragma strict
 
 private var ChatScripUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptclient.php?";
+private var NewIDUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptid.php?";
+private var userID = "globule";
 private var userInput : String = "[Type/dictate your answer]";
 private var userText : String = null;
 private var botOutput : String = null;
@@ -23,7 +25,8 @@ private var currentWords : String;
 
 function Start ()
 {
-	
+	yield getNewID();
+	postMessage("");
 }
 
 function AddText(newText : String)
@@ -38,6 +41,7 @@ private function TypeText (compareWords : String)
 
     for (var letter in compareWords.ToCharArray())
     {
+        if(letter==13) break;
         if (words != compareWords) break;
         currentWords += letter;
         // yield WaitForSeconds(textDelay);
@@ -109,8 +113,9 @@ function OnGUI()
 			}
 			if(GUILayout.Button("Reset"))
 			{
-				 postMessage(":reset");
-				 userText = null;
+				getNewID();
+				postMessage("");
+				userText = null;
 			}
 			if(GUILayout.Button("Rebuild")){
 				postMessage(":build 1");
@@ -129,10 +134,17 @@ function Update ()
 	
 }
 
+function getNewID(){
+    var w = WWW(NewIDUrl);
+    yield w;	
+    userID = w.text;
+    print(userID);
+}
+
 function postMessage(message:String)
 {
 
-    var msgURL = ChatScripUrl+"message="+WWW.EscapeURL(message);
+    var msgURL = ChatScripUrl+"message="+WWW.EscapeURL(message)+"&userID="+WWW.EscapeURL(userID);
     print(msgURL);
     var w = WWW(msgURL);
     yield w;
