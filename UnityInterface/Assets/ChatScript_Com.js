@@ -10,15 +10,17 @@ private var consoleText : String;
 private var scrollPosition : Vector2 = Vector2.zero;
 private var showLog : boolean = false;
 
-public var userTarget : Transform; // attach User_TextBoxTarget here
-public var botTarget : Transform; // attach Bot_TextBoxTarget here
-private var userBubble = Rect(0,0,500,100);
-private var botBubble = Rect(0,0,500,100);
-private var offset =  Vector2(0, 1.5); // height above the target position
 
 public var textDelay = 0.2;
 private var words : String = "Testing, testing, one two, one two";
 private var currentWords : String;
+
+//GUI
+var inputBoxCoords:Rect;
+var inputBoxStyle:GUIStyle;
+var textBubbleStyle:GUIStyle;
+var textBubbleCoords:Rect;
+var userBubbleCoords:Rect;
 
 // private var timeStamp : System.DateTime;
 // private var currentTime : String = null;
@@ -32,7 +34,10 @@ function Start ()
 function AddText(newText : String)
 {
     words = newText;
+    words = words.Replace("\r","");
+    words = words.Replace("\n","");
     TypeText(words);
+
 }
  
 private function TypeText (compareWords : String) 
@@ -41,7 +46,6 @@ private function TypeText (compareWords : String)
 
     for (var letter in compareWords.ToCharArray())
     {
-        if(letter==13) break;
         if (words != compareWords) break;
         currentWords += letter;
         // yield WaitForSeconds(textDelay);
@@ -67,66 +71,56 @@ function OnGUI()
         userText = userInput;
         userInput = "";
 	}
-	GUILayout.BeginArea(Rect (Screen.width *0.1, Screen.height *0.1, Screen.width *0.8, Screen.height *0.8));	
+
+				
+	GUI.skin.box.wordWrap = true; // Set the wordwrap on for box only.
+	GUI.skin.box.alignment = TextAnchor.MiddleLeft; // Text alignment for boxes
+	GUI.skin.label.alignment = TextAnchor.MiddleCenter; // Text alignment
 	
-	GUILayout.BeginVertical();
-				
-		GUI.skin.box.wordWrap = true; // Set the wordwrap on for box only.
-		GUI.skin.box.alignment = TextAnchor.MiddleLeft; // Text alignment for boxes
-		GUI.skin.label.alignment = TextAnchor.MiddleCenter; // Text alignment
-		
-		// 	User text bubble		
-		var userPoint = Camera.main.WorldToScreenPoint(userTarget.position);
-	    userBubble.x = userPoint.x;
-	    userBubble.y = userPoint.y;
-	    GUI.Box(userBubble, userText);
-	    
-	    // Bot text bubble
-	    var botPoint = Camera.main.WorldToScreenPoint(botTarget.position);
-	    botBubble.x = botPoint.x;
-	    botBubble.y = botPoint.y;
-	    GUI.Box(botBubble, currentWords);
-	    
-	    GUILayout.FlexibleSpace();
-	    
-	    if(showLog) // Manages log window elements
-		{
-			GUILayout.Label("Log", GUILayout.Width(550));
-				
-			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(575), GUILayout.Height(175));			
-			GUILayout.Box(consoleText, GUILayout.Width(550)); // Post console text to the log.		
-			GUILayout.EndScrollView ();
-						
-		}
-		
-		GUILayout.FlexibleSpace();
-		
-		// Text box for user input
-		userInput = GUILayout.TextField(userInput);
-				
-		// Horizontal field for "Log", "Reset" and "Rebuild" buttons
-		GUILayout.BeginHorizontal();
-		
-			if(GUILayout.Button("Log"))
-			{
-				showLog = !showLog; // Toggles log visibility
-			}
-			if(GUILayout.Button("Reset"))
-			{
-				getNewID();
-				postMessage("");
-				userText = null;
-			}
-			if(GUILayout.Button("Rebuild")){
-				postMessage(":build 1");
-				userText = null;
-			}
+	// 	User text bubble		
+    var textwidth:float = userBubbleCoords.width*Screen.width/1280;
+    var bubbleheight:float = textBubbleStyle.CalcHeight(GUIContent(userText),textwidth);
+    GUI.Box(Rect(userBubbleCoords.x*Screen.width/1280,userBubbleCoords.y*Screen.height/800,userBubbleCoords.width*Screen.width/1280,bubbleheight),userText, textBubbleStyle);
+    
+    // Bot text bubble
+    
+    textwidth = textBubbleCoords.width*Screen.width/1280;
+    bubbleheight = textBubbleStyle.CalcHeight(GUIContent(words),textwidth);
+    GUI.Box(Rect(textBubbleCoords.x*Screen.width/1280,textBubbleCoords.y*Screen.height/800,textwidth,bubbleheight),currentWords, textBubbleStyle);
+    
+    
+    if(showLog) // Manages log window elements
+	{
+		GUILayout.Label("Log", GUILayout.Width(550));
 			
-		GUILayout.EndHorizontal();
-		
-	GUILayout.EndVertical();
+		scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(575), GUILayout.Height(175));			
+		GUILayout.Box(consoleText, GUILayout.Width(550)); // Post console text to the log.		
+		GUILayout.EndScrollView ();
+					
+	}
+
 	
-	GUILayout.EndArea();
+	// Text box for user input
+	userInput = GUI.TextField(Rect(inputBoxCoords.x*Screen.width/1280,inputBoxCoords.y*Screen.height/800,inputBoxCoords.width*Screen.width/1280,inputBoxCoords.height*Screen.height/800),userInput, inputBoxStyle);
+			
+
+	
+/*	if(GUILayout.Button("Log"))
+	{
+		showLog = !showLog; // Toggles log visibility
+	}
+	if(GUILayout.Button("Reset"))
+	{
+		getNewID();
+		postMessage("");
+		userText = null;
+	}
+	if(GUILayout.Button("Rebuild")){
+		postMessage(":build 1");
+		userText = null;
+	}
+	*/	
+
 }
 
 function Update ()
