@@ -1,7 +1,9 @@
 ﻿#pragma strict
 
-private var ChatScripUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptclient.php?";
-private var NewIDUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptid.php?";
+// private var ChatScripUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptclient.php?";
+// private var NewIDUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptid.php?";
+private var ChatScripUrl= "http://127.0.0.1/chatscriptclient.php?";
+private var NewIDUrl= "http://127.0.0.1/chatscriptid.php?";
 private var userID = "globule";
 private var userInput : String = "[Type/dictate your answer]";
 private var userText : String = null;
@@ -128,7 +130,8 @@ function Update ()
 	
 }
 
-function getNewID(){
+function getNewID()
+{
     var w = WWW(NewIDUrl);
     yield w;	
     userID = w.text;
