@@ -1,9 +1,9 @@
 ﻿#pragma strict
 
- private var ChatScripUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptclient.php?";
- private var NewIDUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptid.php?";
-//private var ChatScripUrl= "http://127.0.0.1/chatscriptclient.php?";
-//private var NewIDUrl= "http://127.0.0.1/chatscriptid.php?";
+// private var ChatScripUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptclient.php?";
+// private var NewIDUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptid.php?";
+private var ChatScripUrl= "http://127.0.0.1/chatscriptclient.php?";
+private var NewIDUrl= "http://127.0.0.1/chatscriptid.php?";
 private var userID = "globule";
 private var userInput : String = "[Type/dictate your answer]";
 private var userText : String = null;
@@ -24,6 +24,12 @@ var textBubbleStyle:GUIStyle;
 var textBubbleCoords:Rect;
 var userBubbleCoords:Rect;
 
+//Game variables
+var trust:int = 0;
+
+//game objects
+var BlancheNeige:Transform;
+
 // private var timeStamp : System.DateTime;
 // private var currentTime : String = null;
 
@@ -38,7 +44,21 @@ function AddText(newText : String)
     words = newText;
     words = words.Replace("\r","");
     words = words.Replace("\n","");
+    parseCodes();
     TypeText(words);
+
+}
+ 
+function parseCodes(){
+
+//trust ++
+	if(words.Contains("CTplus")){
+		trust++;
+		words = words.Replace("CTplus","");
+		print("more trust");
+		BlancheNeige.position.x += 1; 
+		
+	}
 
 }
  
@@ -137,6 +157,17 @@ function getNewID()
     userID = w.text;
     print(userID);
 }
+/*function getTrust() {
+
+    var msgURL = ChatScripUrl+"message="+WWW.EscapeURL("simon say give me variable "+variable)+"&userID="+WWW.EscapeURL(userID);
+    print(msgURL);
+    var w = WWW(msgURL);
+    yield w;
+    return w.text;
+}*/
+
+
+
 
 function postMessage(message:String)
 {
