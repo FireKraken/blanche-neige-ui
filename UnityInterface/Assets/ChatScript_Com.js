@@ -6,7 +6,7 @@ private var ChatScripUrl= "http://127.0.0.1/chatscriptclient.php?";
 private var NewIDUrl= "http://127.0.0.1/chatscriptid.php?";
 private var userID = "globule";
 private var userInput : String = "[Type or dictate your answer here]";
-private var userText : String = null;
+private var userText : String = "Hello young lady";
 private var botOutput : String = null;
 private var consoleText : String;
 private var scrollPosition : Vector2 = Vector2.zero;
@@ -102,13 +102,25 @@ function OnGUI()
 	// 	User text bubble		
     var textwidth:float = userBubbleCoords.width*Screen.width/1280;
     var bubbleheight:float = textBubbleStyle2.CalcHeight(GUIContent(userText),textwidth);
-    GUI.Box(Rect(userBubbleCoords.x*Screen.width/1280,userBubbleCoords.y*Screen.height/800,textwidth,bubbleheight),userText, textBubbleStyle2);
+    var minWidth:float;
+    var maxWidth:float;
+    textBubbleStyle.CalcMinMaxWidth(GUIContent(userText), minWidth,  maxWidth);
+    if(maxWidth>textwidth){
+    	maxWidth=textwidth;
+    }  
+    if(maxWidth<100){maxWidth=100;}    
+    GUI.Box(Rect(userBubbleCoords.x*Screen.width/1280+textwidth-maxWidth,userBubbleCoords.y*Screen.height/800,maxWidth,bubbleheight),userText, textBubbleStyle2);
     
     // Bot text bubble
     
     textwidth = textBubbleCoords.width*Screen.width/1280;
     bubbleheight = textBubbleStyle.CalcHeight(GUIContent(words),textwidth);
-    GUI.Box(Rect(textBubbleCoords.x*Screen.width/1280,textBubbleCoords.y*Screen.height/800,textwidth,bubbleheight),currentWords, textBubbleStyle);
+	textBubbleStyle.CalcMinMaxWidth(GUIContent(words), minWidth,  maxWidth);
+    if(maxWidth>textwidth){
+    	maxWidth=textwidth;
+    }    
+    if(maxWidth<100){maxWidth=100;}
+    GUI.Box(Rect(textBubbleCoords.x*Screen.width/1280,textBubbleCoords.y*Screen.height/800,maxWidth,bubbleheight),currentWords, textBubbleStyle);
     
     
     if(showLog) // Manages log window elements
