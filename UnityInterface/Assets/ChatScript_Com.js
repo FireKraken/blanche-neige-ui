@@ -5,13 +5,12 @@
 private var ChatScripUrl= "http://127.0.0.1/chatscriptclient.php?";
 private var NewIDUrl= "http://127.0.0.1/chatscriptid.php?";
 private var userID = "globule";
-private var userInput : String = "[Type/dictate your answer]";
+private var userInput : String = "[Type or dictate your answer here]";
 private var userText : String = null;
 private var botOutput : String = null;
 private var consoleText : String;
 private var scrollPosition : Vector2 = Vector2.zero;
 private var showLog : boolean = false;
-
 
 public var textDelay = 0.2;
 private var words : String = "Testing, testing, one two, one two";
@@ -21,6 +20,7 @@ private var currentWords : String;
 var inputBoxCoords:Rect;
 var inputBoxStyle:GUIStyle;
 var textBubbleStyle:GUIStyle;
+var textBubbleStyle2:GUIStyle;
 var textBubbleCoords:Rect;
 var userBubbleCoords:Rect;
 
@@ -101,8 +101,8 @@ function OnGUI()
 	
 	// 	User text bubble		
     var textwidth:float = userBubbleCoords.width*Screen.width/1280;
-    var bubbleheight:float = textBubbleStyle.CalcHeight(GUIContent(userText),textwidth);
-    GUI.Box(Rect(userBubbleCoords.x*Screen.width/1280,userBubbleCoords.y*Screen.height/800,userBubbleCoords.width*Screen.width/1280,bubbleheight),userText, textBubbleStyle);
+    var bubbleheight:float = textBubbleStyle2.CalcHeight(GUIContent(userText),textwidth);
+    GUI.Box(Rect(userBubbleCoords.x*Screen.width/1280,userBubbleCoords.y*Screen.height/800,textwidth,bubbleheight),userText, textBubbleStyle2);
     
     // Bot text bubble
     
@@ -123,8 +123,13 @@ function OnGUI()
 
 	
 	// Text box for user input
+	if((Event.current.type == EventType.MouseUp)&& (GUI.GetNameOfFocusedControl() == "inputbox") && (userInput == "[Type or dictate your answer here]")){
+			userInput = "";
+	}		
+	GUI.SetNextControlName ("inputbox");
 	userInput = GUI.TextField(Rect(inputBoxCoords.x*Screen.width/1280,inputBoxCoords.y*Screen.height/800,inputBoxCoords.width*Screen.width/1280,inputBoxCoords.height*Screen.height/800),userInput, inputBoxStyle);
-			
+		
+	//if ((Event.current.button == 1) && (GUI.GetNameOfFocusedControl() == "inputbox") && (userInput == "[Type or dictate your answer here]")){
 
 	
 /*	if(GUILayout.Button("Log"))
