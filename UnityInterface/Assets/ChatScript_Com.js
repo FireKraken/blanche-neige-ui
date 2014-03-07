@@ -23,6 +23,8 @@ var textBubbleStyle:GUIStyle;
 var textBubbleStyle2:GUIStyle;
 var textBubbleCoords:Rect;
 var userBubbleCoords:Rect;
+var buttonStyle:GUIStyle;
+var restartButtonCoords:Rect;
 
 //Game variables
 var trust:int = 0;
@@ -147,14 +149,14 @@ function OnGUI()
 /*	if(GUILayout.Button("Log"))
 	{
 		showLog = !showLog; // Toggles log visibility
-	}
-	if(GUILayout.Button("Reset"))
+	}*/
+	if(GUI.Button(Rect(restartButtonCoords.x*Screen.width/1280,restartButtonCoords.y*Screen.height/800, restartButtonCoords.width*Screen.width/1280,restartButtonCoords.height*Screen.height/800 ),"[RESTART]",buttonStyle))
 	{
 		getNewID();
 		postMessage("");
-		userText = null;
+		userText = "Hello young lady";
 	}
-	if(GUILayout.Button("Rebuild")){
+	/*if(GUILayout.Button("Rebuild")){
 		postMessage(":build 1");
 		userText = null;
 	}
@@ -193,11 +195,16 @@ function postMessage(message:String)
     print(msgURL);
     var w = WWW(msgURL);
     yield w;
-    consoleText = consoleText+"\n[Snow White] said: "+w.text;
-    scrollPosition.y = Mathf.Infinity;
-    
-    botOutput = w.text; // Retrieve bot response for display in text bubble
-	AddText("\n\n"+botOutput);
+    if (!String.IsNullOrEmpty(w.error)){
+       botOutput = "You'll have to be connected to the Internet to talk to me, Old Woman.";
+       AddText("\n\n"+botOutput);
+     }
+    else {
+    	consoleText = consoleText+"\n[Snow White] said: "+w.text;
+    	scrollPosition.y = Mathf.Infinity; 
+    	botOutput = w.text; // Retrieve bot response for display in text bubble
+		AddText("\n\n"+botOutput);
+	}
     
      /* // Recording time stamps for bot replies
     timeStamp = System.DateTime.Now;
