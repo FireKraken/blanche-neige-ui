@@ -152,9 +152,12 @@ function OnGUI()
 	}*/
 	if(GUI.Button(Rect(restartButtonCoords.x*Screen.width/1280,restartButtonCoords.y*Screen.height/800, restartButtonCoords.width*Screen.width/1280,restartButtonCoords.height*Screen.height/800 ),"[RESTART]",buttonStyle))
 	{
+		/* // For some reason posts garbled text from the server when spamming the [RESTART] button
 		getNewID();
 		postMessage("");
-		userText = "Hello young lady";
+		userText = "Hello young lady";*/
+		
+		Application.LoadLevel(0); // Application.LoadLevel("test"); // Alternative, replace the scene's index number with the name of the scene
 	}
 	/*if(GUILayout.Button("Rebuild")){
 		postMessage(":build 1");
