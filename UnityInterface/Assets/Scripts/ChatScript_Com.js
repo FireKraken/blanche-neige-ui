@@ -12,9 +12,16 @@ private var consoleText : String;
 private var scrollPosition : Vector2 = Vector2.zero;
 private var showLog : boolean = false;
 
+//text bubble vars
+
 public var textDelay = 0.2;
-private var words : String = "Testing, testing, one two, one two";
-private var currentWords : String;
+private var botWords : String = "Testing, testing, one two, one two";
+private var botCurrentWords : String= "";
+private var playerWords : String = "Testing, testing, one two, one two";
+private var playerCurrentWords : String = "";
+private var botTalking:boolean = false;
+private var playerTalking:boolean = false;
+
 
 //GUI
 var inputBoxCoords:Rect;
@@ -35,64 +42,86 @@ var BlancheNeige:Transform;
 // private var timeStamp : System.DateTime;
 // private var currentTime : String = null;
 
+
 function Start ()
 {
 	yield getNewID();
 	postMessage("");
+	yield playerSays("Hello young lady.");
 }
 
-function AddText(newText : String)
-{
-    words = newText;
-    words = words.Replace("\r","");
-    words = words.Replace("\n","");
-    parseCodes();
-    TypeText(words);
+function botSays(bubbletext:String){
+
+	while(playerTalking==true){
+		yield WaitForSeconds(0.1);
+	}
+    botTalking = true;
+    bubbletext = bubbletext.Replace("\r","");
+    bubbletext = bubbletext.Replace("\n","");
+    bubbletext = parseCodes(bubbletext);
+    botWords = bubbletext;
+	botCurrentWords = "";
+	
+
+    for (var letter in bubbletext.ToCharArray())
+    {
+        if (botCurrentWords == bubbletext) break;
+        botCurrentWords += letter;
+        yield WaitForSeconds(textDelay * Random.Range(0.01, 0.5)); // Original Random.Range(0.5, 2)
+    } 
+    botTalking = false;
 
 }
- 
-function parseCodes(){
+
+function playerSays(bubbletext:String){
+
+	while(botTalking==true){
+		yield WaitForSeconds(0.1);
+	}
+    playerTalking = true;
+    bubbletext = bubbletext.Replace("\r","");
+    bubbletext = bubbletext.Replace("\n","");
+    bubbletext = parseCodes(bubbletext);
+    playerWords = bubbletext;
+	playerCurrentWords = "";
+
+
+    for (var letter in bubbletext.ToCharArray())
+    {
+
+        if (playerCurrentWords == bubbletext) break;
+        playerCurrentWords += letter;
+        yield WaitForSeconds(textDelay * Random.Range(0.01, 0.5)); // Original Random.Range(0.5, 2)
+    } 
+    playerTalking = false;
+
+}
+  
+function parseCodes(parseText:String):String{
 
 //trust ++
-	if(words.Contains("CTplus")){
+	if(parseText.Contains("CTplus")){
 		trust++;
-		words = words.Replace("CTplus","");
+		parseText = parseText.Replace("CTplus","");
 		print("more trust");
 		BlancheNeige.position.x += 1; 
 		
 	}
+	return parseText;
 
 }
  
-private function TypeText (compareWords : String) 
-{
-	currentWords = null;
 
-    for (var letter in compareWords.ToCharArray())
-    {
-        if (words != compareWords) break;
-        currentWords += letter;
-        // yield WaitForSeconds(textDelay);
-        yield WaitForSeconds(textDelay * Random.Range(0.01, 0.5)); // Original Random.Range(0.5, 2)
-    }  
- 
-}
 
 function OnGUI()
 {
 
 	if (Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.Return))
 	{
-		/* // Recording timestamps for user inputs
-		timeStamp = System.DateTime.Now;
-		currentTime = String.Format("{0:D2}:{1:D2}:{2:D2}", timeStamp.Hour, timeStamp.Minute, timeStamp.Second);
-		
-		consoleText = consoleText+"\n["+currentTime+"] You said: "+userInput;
-		*/
 		
 		consoleText = consoleText+"\n[You] said: "+userInput;
         postMessage(userInput);
-        userText = userInput;
+        playerSays(userInput);
         userInput = "";
 	}
 
@@ -103,27 +132,35 @@ function OnGUI()
 	
 	// 	User text bubble		
     var textwidth:float = userBubbleCoords.width*Screen.width/1280;
-    var bubbleheight:float = textBubbleStyle2.CalcHeight(GUIContent(userText),textwidth);
+    var bubbleheight:float = textBubbleStyle2.CalcHeight(GUIContent(playerWords),textwidth);
     var minWidth:float;
     var maxWidth:float;
-    textBubbleStyle.CalcMinMaxWidth(GUIContent(userText), minWidth,  maxWidth);
+    textBubbleStyle.CalcMinMaxWidth(GUIContent(playerWords), minWidth,  maxWidth);
     if(maxWidth>textwidth){
     	maxWidth=textwidth;
     }  
-    if(maxWidth<100){maxWidth=100;}    
-    GUI.Box(Rect(userBubbleCoords.x*Screen.width/1280+textwidth-maxWidth,userBubbleCoords.y*Screen.height/800,maxWidth,bubbleheight),userText, textBubbleStyle2);
+    if(maxWidth<100){maxWidth=100;}  
+    GUI.color.a = playerCurrentWords.Length;
+    GUI.color.a /= 8;  
+    if(playerCurrentWords == playerWords) {GUI.color.a = 1;}
+    GUI.Box(Rect(userBubbleCoords.x*Screen.width/1280+textwidth-maxWidth,userBubbleCoords.y*Screen.height/800,maxWidth,bubbleheight),playerCurrentWords, textBubbleStyle2);
+    GUI.color.a = 1.0;
     
     // Bot text bubble
     
     textwidth = textBubbleCoords.width*Screen.width/1280;
-    bubbleheight = textBubbleStyle.CalcHeight(GUIContent(words),textwidth);
-	textBubbleStyle.CalcMinMaxWidth(GUIContent(words), minWidth,  maxWidth);
+    bubbleheight = textBubbleStyle.CalcHeight(GUIContent(botWords),textwidth);
+	textBubbleStyle.CalcMinMaxWidth(GUIContent(botWords), minWidth,  maxWidth);
     if(maxWidth>textwidth){
     	maxWidth=textwidth;
     }    
     if(maxWidth<100){maxWidth=100;}
-    GUI.Box(Rect(textBubbleCoords.x*Screen.width/1280,textBubbleCoords.y*Screen.height/800,maxWidth,bubbleheight),currentWords, textBubbleStyle);
-    
+    //print(botCurrentWords.Length);
+    GUI.color.a = botCurrentWords.Length;
+    GUI.color.a /= 8;
+    if(botCurrentWords == botWords) {GUI.color.a = 1;}
+    GUI.Box(Rect(textBubbleCoords.x*Screen.width/1280,textBubbleCoords.y*Screen.height/800,maxWidth,bubbleheight),botCurrentWords, textBubbleStyle);
+    GUI.color.a = 1.0;
     
     if(showLog) // Manages log window elements
 	{
@@ -143,27 +180,29 @@ function OnGUI()
 	GUI.SetNextControlName ("inputbox");
 	userInput = GUI.TextField(Rect(inputBoxCoords.x*Screen.width/1280,inputBoxCoords.y*Screen.height/800,inputBoxCoords.width*Screen.width/1280,inputBoxCoords.height*Screen.height/800),userInput, inputBoxStyle);
 		
-	//if ((Event.current.button == 1) && (GUI.GetNameOfFocusedControl() == "inputbox") && (userInput == "[Type or dictate your answer here]")){
-
-	
+		
 /*	if(GUILayout.Button("Log"))
 	{
 		showLog = !showLog; // Toggles log visibility
 	}*/
+	
+	//Restart Button
 	if(GUI.Button(Rect(restartButtonCoords.x*Screen.width/1280,restartButtonCoords.y*Screen.height/800, restartButtonCoords.width*Screen.width/1280,restartButtonCoords.height*Screen.height/800 ),"[RESTART]",buttonStyle))
 	{
-		/* // For some reason posts garbled text from the server when spamming the [RESTART] button
-		getNewID();
-		postMessage("");
-		userText = "Hello young lady";*/
+		// For some reason posts garbled text from the server when spamming the [RESTART] button
+		/*botTalking = false;
+		playerTalking = false;
+		botWords  = "";
+		botCurrentWords = "";
+		playerWords = "";
+		playerCurrentWords = "";
+
+		Start();*/
+		/*postMessage("");
+		playerSays("Hello young lady");*/
 		
 		Application.LoadLevel(0); // Application.LoadLevel("test"); // Alternative, replace the scene's index number with the name of the scene
 	}
-	/*if(GUILayout.Button("Rebuild")){
-		postMessage(":build 1");
-		userText = null;
-	}
-	*/	
 
 }
 
@@ -200,13 +239,13 @@ function postMessage(message:String)
     yield w;
     if (!String.IsNullOrEmpty(w.error)){
        botOutput = "You'll have to be connected to the Internet to talk to me, Old Woman.";
-       AddText("\n\n"+botOutput);
+       botSays(botOutput);
      }
     else {
     	consoleText = consoleText+"\n[Snow White] said: "+w.text;
     	scrollPosition.y = Mathf.Infinity; 
     	botOutput = w.text; // Retrieve bot response for display in text bubble
-		AddText("\n\n"+botOutput);
+		botSays(botOutput);
 	}
     
      /* // Recording time stamps for bot replies
