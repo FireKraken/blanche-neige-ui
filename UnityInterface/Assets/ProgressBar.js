@@ -11,8 +11,8 @@ function Start(){
 
 public function changeState(curValue:float, MaxValue:float){
 
-	var newFrame:int = (curValue/MaxValue)*17;
-	print("frame:"+newFrame);
+	var newFrame:int = (curValue/MaxValue)*16;
+	//print("frame:"+newFrame);
 	sr.sprite = frames[newFrame];
 	
 

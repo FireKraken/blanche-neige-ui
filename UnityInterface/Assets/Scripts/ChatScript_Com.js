@@ -36,7 +36,7 @@ var restartButtonCoords:Rect;
 public var TrustBar:ProgressBar;
 
 //Game variables
-var trust:int = 0;
+var trust:int = 2;
 var maxTrust:int = 5;
 
 //game objects
@@ -105,10 +105,10 @@ function parseCodes(parseText:String):String{
 //trust ++
 	if(parseText.Contains("CTplus")){
 		trust++;
-		parseText = parseText.Replace("CTplus","");
-		print("more trust");
+		parseText = parseText.Replace("CTplus","");		
 		TrustBar.GetComponent(ProgressBar).changeState(trust,maxTrust);
-		BlancheNeige.position.x += 1; 
+		BlancheNeige.GetComponent(Animator).SetInteger("trust",trust);
+		
 		
 	}
 	return parseText;
