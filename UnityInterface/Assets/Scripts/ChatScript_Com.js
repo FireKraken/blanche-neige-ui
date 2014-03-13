@@ -32,12 +32,18 @@ var textBubbleCoords:Rect;
 var userBubbleCoords:Rect;
 var buttonStyle:GUIStyle;
 var restartButtonCoords:Rect;
+var trustLabelCoords:Rect;
+var patienceLabelCoords:Rect;
+var labelStyle:GUIStyle;
 
 public var TrustBar:ProgressBar;
+public var PatienceBar:ProgressBar;
 
 //Game variables
-var trust:int = 2;
-var maxTrust:int = 5;
+var trust:int = 0;
+var maxTrust:int = 3;
+var patience:int = 10;
+var maxPatience:int = 10;
 
 //game objects
 var BlancheNeige:Transform;
@@ -48,13 +54,12 @@ var BlancheNeige:Transform;
 
 function Start ()
 {
-	yield getNewID();
-	postMessage("");
-	yield playerSays("Hello young lady.");
+	initConversation();
 }
 
-function botSays(bubbletext:String){
 
+function botSays(bubbletext:String){
+	
 	while(playerTalking==true){
 		yield WaitForSeconds(0.1);
 	}
@@ -69,6 +74,7 @@ function botSays(bubbletext:String){
     for (var letter in bubbletext.ToCharArray())
     {
         if (botCurrentWords == bubbletext) break;
+        if (botWords != bubbletext) break;
         botCurrentWords += letter;
         yield WaitForSeconds(textDelay * Random.Range(0.01, 0.5)); // Original Random.Range(0.5, 2)
     } 
@@ -93,6 +99,7 @@ function playerSays(bubbletext:String){
     {
 
         if (playerCurrentWords == bubbletext) break;
+        if (playerWords != bubbletext) break;
         playerCurrentWords += letter;
         yield WaitForSeconds(textDelay * Random.Range(0.01, 0.5)); // Original Random.Range(0.5, 2)
     } 
@@ -122,7 +129,6 @@ function OnGUI()
 
 	if (Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.Return))
 	{
-		
 		consoleText = consoleText+"\n[You] said: "+userInput;
         postMessage(userInput);
         playerSays(userInput);
@@ -193,26 +199,26 @@ function OnGUI()
 	//Restart Button
 	if(GUI.Button(Rect(restartButtonCoords.x*Screen.width/1280,restartButtonCoords.y*Screen.height/800, restartButtonCoords.width*Screen.width/1280,restartButtonCoords.height*Screen.height/800 ),"[RESTART]",buttonStyle))
 	{
-		// For some reason posts garbled text from the server when spamming the [RESTART] button
-		/*botTalking = false;
-		playerTalking = false;
-		botWords  = "";
-		botCurrentWords = "";
-		playerWords = "";
-		playerCurrentWords = "";
 
-		Start();*/
-		/*postMessage("");
-		playerSays("Hello young lady");*/
-		
 		Application.LoadLevel(0); // Application.LoadLevel("test"); // Alternative, replace the scene's index number with the name of the scene
 	}
+	
+	// Progress Bars
+	GUI.Label(Rect(trustLabelCoords.x*Screen.width/1280,trustLabelCoords.y*Screen.height/800, trustLabelCoords.width*Screen.width/1280,trustLabelCoords.height*Screen.height/800 ),"TRUST",labelStyle);
+	GUI.Label(Rect(patienceLabelCoords.x*Screen.width/1280,patienceLabelCoords.y*Screen.height/800, patienceLabelCoords.width*Screen.width/1280,patienceLabelCoords.height*Screen.height/800 ),"PATIENCE",labelStyle);
 
 }
 
-function Update ()
-{
+function initConversation(){
+
 	
+	yield getNewID();
+	playerSays("Hello young lady.");
+	postMessage("");
+	PatienceBar.GetComponent(ProgressBar).changeState(patience,maxPatience);
+	
+	
+
 }
 
 function getNewID()
@@ -238,7 +244,7 @@ function postMessage(message:String)
 {
 
     var msgURL = ChatScripUrl+"message="+WWW.EscapeURL(message)+"&userID="+WWW.EscapeURL(userID);
-    print(msgURL);
+    //print(msgURL);
     var w = WWW(msgURL);
     yield w;
     if (!String.IsNullOrEmpty(w.error)){
