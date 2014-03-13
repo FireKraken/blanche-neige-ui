@@ -33,8 +33,11 @@ var userBubbleCoords:Rect;
 var buttonStyle:GUIStyle;
 var restartButtonCoords:Rect;
 
+public var TrustBar:ProgressBar;
+
 //Game variables
 var trust:int = 0;
+var maxTrust:int = 5;
 
 //game objects
 var BlancheNeige:Transform;
@@ -104,6 +107,7 @@ function parseCodes(parseText:String):String{
 		trust++;
 		parseText = parseText.Replace("CTplus","");
 		print("more trust");
+		TrustBar.GetComponent(ProgressBar).changeState(trust,maxTrust);
 		BlancheNeige.position.x += 1; 
 		
 	}
