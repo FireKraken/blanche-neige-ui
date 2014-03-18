@@ -42,8 +42,8 @@ public var PatienceBar:ProgressBar;
 //Game variables
 var trust:int = 0;
 var maxTrust:int = 3;
-var patience:int = 10;
-var maxPatience:int = 10;
+var patience:int = 6;
+var maxPatience:int = 6;
 
 //game objects
 var BlancheNeige:Transform;
@@ -59,14 +59,15 @@ function Start ()
 
 
 function botSays(bubbletext:String){
-	
-	while(playerTalking==true){
-		yield WaitForSeconds(0.1);
-	}
-    botTalking = true;
+
     bubbletext = bubbletext.Replace("\r","");
     bubbletext = bubbletext.Replace("\n","");
     bubbletext = parseCodes(bubbletext);
+	while(playerTalking==true||botTalking==true){
+		yield WaitForSeconds(0.1);
+	}
+    botTalking = true;
+
     botWords = bubbletext;
 	botCurrentWords = "";
 	
@@ -84,7 +85,7 @@ function botSays(bubbletext:String){
 
 function playerSays(bubbletext:String){
 
-	while(botTalking==true){
+	while(playerTalking==true||botTalking==true){
 		yield WaitForSeconds(0.1);
 	}
     playerTalking = true;
@@ -115,9 +116,40 @@ function parseCodes(parseText:String):String{
 		parseText = parseText.Replace("CTplus","");		
 		TrustBar.GetComponent(ProgressBar).changeState(trust,maxTrust);
 		BlancheNeige.GetComponent(Animator).SetInteger("trust",trust);
-		
-		
 	}
+//trust --
+	if(parseText.Contains("CTminus")){
+		trust--;
+		parseText = parseText.Replace("CTminus","");		
+		TrustBar.GetComponent(ProgressBar).changeState(trust,maxTrust);
+		BlancheNeige.GetComponent(Animator).SetInteger("trust",trust);
+	}	
+//end
+	if(parseText.Contains("CFail")){
+		trust=-1;
+		parseText = parseText.Replace("CFail","");		
+		TrustBar.GetComponent(ProgressBar).changeState(0,maxTrust);
+		BlancheNeige.GetComponent(Animator).SetInteger("trust",trust);
+		//print("fail");
+	}	
+//end
+	if(parseText.Contains("CPatience")){
+		patience--;
+		parseText = parseText.Replace("CPatience","");		
+		PatienceBar.GetComponent(ProgressBar).changeState(patience,maxPatience);
+	}		
+//win
+	if(parseText.Contains("CWin")){
+		parseText = parseText.Replace("CWin","");		
+	}	
+//gambit
+	if(parseText.Contains("CGambit")){
+		parseText = parseText.Replace("CGambit","");	
+		playerWords = playerCurrentWords+"...";
+		playerCurrentWords = playerWords;
+		print("CGambit:"+playerCurrentWords);
+		//playerSays(playerWords);
+	}	
 	return parseText;
 
 }
