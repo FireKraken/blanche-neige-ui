@@ -1,10 +1,11 @@
 ﻿#pragma strict
 
-// private var ChatScripUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptclient.php?";
-// private var NewIDUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptid.php?";
-private var ChatScripUrl= "http://127.0.0.1/chatscriptclient.php?";
-private var NewIDUrl= "http://127.0.0.1/chatscriptid.php?";
+ private var ChatScripUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptclient.php?";
+ private var NewIDUrl= "http://enurai.encs.concordia.ca/chatbot/chatscriptid.php?";
+//private var ChatScripUrl= "http://127.0.0.1/chatscriptclient.php?";
+//private var NewIDUrl= "http://127.0.0.1/chatscriptid.php?";
 private var userID = "globule";
+private var userNumber:int = 0;
 private var userInput : String = "[Type or dictate your answer here]";
 private var userText : String = "Hello young lady";
 private var botOutput : String = null;
@@ -40,6 +41,7 @@ public var TrustBar:ProgressBar;
 public var PatienceBar:ProgressBar;
 
 //Game variables
+var session:int = 0;
 var trust:int = 0;
 var maxTrust:int = 3;
 var patience:int = 6;
@@ -54,6 +56,7 @@ var BlancheNeige:Transform;
 
 function Start ()
 {
+	getNewID();
 	initConversation();
 }
 
@@ -232,7 +235,8 @@ function OnGUI()
 	if(GUI.Button(Rect(restartButtonCoords.x*Screen.width/1280,restartButtonCoords.y*Screen.height/800, restartButtonCoords.width*Screen.width/1280,restartButtonCoords.height*Screen.height/800 ),"[RESTART]",buttonStyle))
 	{
 
-		Application.LoadLevel(0); // Application.LoadLevel("test"); // Alternative, replace the scene's index number with the name of the scene
+		initConversation();
+		//Application.LoadLevel(0); // Application.LoadLevel("test"); // Alternative, replace the scene's index number with the name of the scene
 	}
 	
 	// Progress Bars
@@ -242,14 +246,20 @@ function OnGUI()
 }
 
 function initConversation(){
-
 	
-	yield getNewID();
+	while(userNumber==0){
+		yield WaitForSeconds(0.1);
+	}	
+	session++;
+	userID = "id_"+userNumber+"_session_" +session;
+	print(userID);
+	trust = 0;
+	patience = 6;
 	playerSays("Hello young lady.");
 	postMessage("");
 	PatienceBar.GetComponent(ProgressBar).changeState(patience,maxPatience);
-	
-	
+	TrustBar.GetComponent(ProgressBar).changeState(trust,maxTrust);
+		
 
 }
 
@@ -257,9 +267,10 @@ function getNewID()
 {
     var w = WWW(NewIDUrl);
     yield w;	
-    userID = w.text;
-    print(userID);
+    userNumber = int.Parse(w.text);
+    print("userNumber:"+userNumber);
 }
+
 /*function getTrust() {
 
     var msgURL = ChatScripUrl+"message="+WWW.EscapeURL("simon say give me variable "+variable)+"&userID="+WWW.EscapeURL(userID);
@@ -276,7 +287,7 @@ function postMessage(message:String)
 {
 
     var msgURL = ChatScripUrl+"message="+WWW.EscapeURL(message)+"&userID="+WWW.EscapeURL(userID);
-    //print(msgURL);
+    print(msgURL);
     var w = WWW(msgURL);
     yield w;
     if (!String.IsNullOrEmpty(w.error)){
