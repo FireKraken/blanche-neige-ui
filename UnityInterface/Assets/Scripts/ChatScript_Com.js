@@ -87,8 +87,8 @@ function botSays (bubbletext : String)
         if (botCurrentWords == bubbletext) break;
         if (botWords != bubbletext) break;
         botCurrentWords += letter;
-        yield WaitForSeconds (textDelay * Random.Range (0.01, 0.5)); // Original Random.Range(0.5, 2)
-    } 
+        yield WaitForSeconds (textDelay * Random.Range (0.25, 0.5)); // Original Random.Range(0.5, 2)
+    }
     
     botTalking = false;
 
@@ -127,7 +127,7 @@ function parseCodes(parseText:String) : String
 // trust ++
 	if (parseText.Contains ("CTplus"))
 	{
-		trust++;
+		trust ++;
 		parseText = parseText.Replace ("CTplus", "");		
 		TrustBar.GetComponent (ProgressBar).changeState (trust, maxTrust);
 		BlancheNeige.GetComponent (Animator).SetInteger ("trust", trust);
@@ -135,7 +135,7 @@ function parseCodes(parseText:String) : String
 // trust --
 	if (parseText.Contains ("CTminus"))
 	{
-		trust--;
+		trust --;
 		parseText = parseText.Replace ("CTminus", "");		
 		TrustBar.GetComponent (ProgressBar).changeState (trust, maxTrust);
 		BlancheNeige.GetComponent (Animator).SetInteger ("trust", trust);
@@ -143,16 +143,16 @@ function parseCodes(parseText:String) : String
 // end
 	if (parseText.Contains ("CFail"))
 	{
-		trust=-1;
+		trust = -1;
 		parseText = parseText.Replace ("CFail", "");		
 		TrustBar.GetComponent (ProgressBar).changeState (0, maxTrust);
 		BlancheNeige.GetComponent (Animator).SetInteger ("trust", trust);
-		//print("fail");
+		//print ("fail");
 	}	
 // end
 	if (parseText.Contains ("CPatience"))
 	{
-		patience--;
+		patience --;
 		parseText = parseText.Replace ("CPatience", "");		
 		PatienceBar.GetComponent (ProgressBar).changeState (patience, maxPatience);
 	}		
@@ -284,7 +284,7 @@ function initConversation ()
 	print (userID);
 	trust = 0;
 	patience = 6;
-	BlancheNeige.GetComponent (Animator).SetInteger ("trust", trust);
+	BlancheNeige.GetComponent (Animator).SetInteger ("trust", trust); // Resets Snow White's animation to the initial state
 	playerSays ("Hello young lady.");
 	postMessage ("");
 	PatienceBar.GetComponent (ProgressBar).changeState (patience, maxPatience);
