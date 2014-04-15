@@ -128,38 +128,38 @@ function parseCodes(parseText:String) : String
 	if (parseText.Contains ("CTplus"))
 	{
 		trust++;
-		parseText = parseText.Replace("CTplus", "");		
-		TrustBar.GetComponent(ProgressBar).changeState(trust,maxTrust);
-		BlancheNeige.GetComponent(Animator).SetInteger("trust",trust);
+		parseText = parseText.Replace ("CTplus", "");		
+		TrustBar.GetComponent (ProgressBar).changeState (trust, maxTrust);
+		BlancheNeige.GetComponent (Animator).SetInteger ("trust", trust);
 	}
 // trust --
 	if (parseText.Contains ("CTminus"))
 	{
 		trust--;
-		parseText = parseText.Replace("CTminus", "");		
-		TrustBar.GetComponent(ProgressBar).changeState(trust,maxTrust);
-		BlancheNeige.GetComponent(Animator).SetInteger("trust",trust);
+		parseText = parseText.Replace ("CTminus", "");		
+		TrustBar.GetComponent (ProgressBar).changeState (trust, maxTrust);
+		BlancheNeige.GetComponent (Animator).SetInteger ("trust", trust);
 	}	
 // end
 	if (parseText.Contains ("CFail"))
 	{
 		trust=-1;
-		parseText = parseText.Replace("CFail", "");		
-		TrustBar.GetComponent(ProgressBar).changeState(0,maxTrust);
-		BlancheNeige.GetComponent(Animator).SetInteger("trust",trust);
+		parseText = parseText.Replace ("CFail", "");		
+		TrustBar.GetComponent (ProgressBar).changeState (0, maxTrust);
+		BlancheNeige.GetComponent (Animator).SetInteger ("trust", trust);
 		//print("fail");
 	}	
 // end
 	if (parseText.Contains ("CPatience"))
 	{
 		patience--;
-		parseText = parseText.Replace("CPatience", "");		
-		PatienceBar.GetComponent(ProgressBar).changeState(patience,maxPatience);
+		parseText = parseText.Replace ("CPatience", "");		
+		PatienceBar.GetComponent (ProgressBar).changeState (patience, maxPatience);
 	}		
 // win
 	if (parseText.Contains ("CWin"))
 	{
-		parseText = parseText.Replace("CWin", "");		
+		parseText = parseText.Replace ("CWin", "");		
 	}	
 // gambit
 	if (parseText.Contains ("CGambit"))
@@ -167,7 +167,7 @@ function parseCodes(parseText:String) : String
 		parseText = parseText.Replace ("CGambit", "");	
 		playerWords = playerCurrentWords + "- [Snow White curtly interrupts you]";
 		playerCurrentWords = playerWords;
-		print("CGambit:"+playerCurrentWords);
+		print ("CGambit:" + playerCurrentWords);
 		// playerSays (playerWords);
 	}
 	
@@ -284,10 +284,11 @@ function initConversation ()
 	print (userID);
 	trust = 0;
 	patience = 6;
+	BlancheNeige.GetComponent (Animator).SetInteger ("trust", trust);
 	playerSays ("Hello young lady.");
 	postMessage ("");
-	PatienceBar.GetComponent (ProgressBar).changeState (patience,maxPatience);
-	TrustBar.GetComponent (ProgressBar).changeState (trust,maxTrust);
+	PatienceBar.GetComponent (ProgressBar).changeState (patience, maxPatience);
+	TrustBar.GetComponent (ProgressBar).changeState (trust, maxTrust);
 }
 
 function getNewID ()
