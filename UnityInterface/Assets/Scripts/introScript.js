@@ -12,7 +12,6 @@ private var botOutput : String = null;
 private var consoleText : String;
 private var scrollPosition : Vector2 = Vector2.zero;
 private var showLog : boolean = false;
-private var hasWon:boolean = false;
 
 // Text bubble variables
 
@@ -38,6 +37,8 @@ var textBubbleCoords : Rect;
 var userBubbleCoords : Rect;
 var buttonStyle : GUIStyle;
 var restartButtonCoords : Rect;
+var introButtonCoords : Rect;
+var tutorialButtonCoords : Rect;
 var trustLabelCoords : Rect;
 var patienceLabelCoords : Rect;
 var labelStyle : GUIStyle;
@@ -61,9 +62,9 @@ var BlancheNeige : Transform;
 
 function Start ()
 {
-	getNewID ();
-	initConversation ();
-	print(Application.loadedLevel);
+	if(Application.loadedLevelName=="win"){
+		botSays("Congratulations, you've murdered an innocent woman to satisfy your vanity.");	
+	}
 }
 
 
@@ -91,18 +92,11 @@ function botSays (bubbletext : String)
         botCurrentWords += letter;
         yield WaitForSeconds (textDelay * Random.Range (0.25, 0.5)); // Original Random.Range(0.5, 2)
     }
+    for(var i:int=0;i<20;i++){
+    	yield(WaitForSeconds(0.1));
+    }
     
     botTalking = false;
-    
-    if(hasWon){
-    
-	    for(var i:int=0;i<20;i++){
-	    	yield(WaitForSeconds(0.1));
-	    }
-    	Application.LoadLevel("test");
-    	
-    	
-    }
 
 }
 
@@ -129,7 +123,10 @@ function playerSays (bubbletext:String)
         playerCurrentWords += letter;
         yield WaitForSeconds (textDelay * Random.Range (0.01, 0.5)); // Original Random.Range(0.5, 2)
     } 
-    playerTalking = false;
+	while (playerTalking == true || botTalking == true)
+	{
+		yield WaitForSeconds (2);
+	}
 
 }
   
@@ -270,13 +267,57 @@ function OnGUI ()
 	}*/
 	
 	//Restart Button
-	if (GUI.Button (Rect (restartButtonCoords.x * Screen.width / 1280, restartButtonCoords.y * Screen.height / 800, restartButtonCoords.width * Screen.width / 1280, restartButtonCoords.height * Screen.height / 800 ), "[RESTART]", buttonStyle))
-	{
+	if(Application.loadedLevelName!="win"){
+		if (GUI.Button (Rect (restartButtonCoords.x * Screen.width / 1280, restartButtonCoords.y * Screen.height / 800, restartButtonCoords.width * Screen.width / 1280, restartButtonCoords.height * Screen.height / 800 ), "[PLAY]", buttonStyle))
+		{
 
-		initConversation ();
-		// Application.LoadLevel(0); // Application.LoadLevel("test"); // Alternatively, replace the scene's index number with the name of the scene
+			Application.LoadLevel("test");
+		}
 	}
-	
+	//intro Button
+	if(Application.loadedLevelName!="win"){
+		if (GUI.Button (Rect (introButtonCoords.x * Screen.width / 1280, introButtonCoords.y * Screen.height / 800, introButtonCoords.width * Screen.width / 1280, introButtonCoords.height * Screen.height / 800 ), "[INTRO]", buttonStyle))
+		{
+
+			botSays("Hi. So let's assume you're familiar with the Snow White folk tale.");
+			botSays("You play Snow White's stepmother, often named the Evil Queen");
+			botSays("You're a very beautiful woman but your mirror claims Snow White is even more beautiful.");
+			botSays("That is a sufficient reason for you to kill her.");
+			botSays("You've already attempted twice to her life but she managed to survive.");
+			botSays("Your new ploy is to try to convince her to eat an apple you've dipped in poison.");
+			botSays("You've disguised yourself as an old woman and are heading towards the house of the seven dwarves where she lives.");
+			botSays("You'll need to find the good words to convince her.");
+			botSays("She might be a bit suspicious by now.");
+			botSays("You can click 'play' to proceed.");
+			//Application.LoadLevel("test");
+			// Application.LoadLevel(0); // Application.LoadLevel("test"); // Alternatively, replace the scene's index number with the name of the scene
+		}	
+	}
+	//intro Button
+	//if(Application.loadedLevel==
+	if(Application.loadedLevelName!="win"){
+		if (GUI.Button (Rect (tutorialButtonCoords.x * Screen.width / 1280, tutorialButtonCoords.y * Screen.height / 800, tutorialButtonCoords.width * Screen.width / 1280, tutorialButtonCoords.height * Screen.height / 800 ), "[TUTORIAL]", buttonStyle))
+		{
+
+			botSays("Talking to Snow White is simple: type whatever you wish to say to her and press ENTER.");
+			botSays("If you're being convincing, her 'trust' meter will go up. When it is full, she will accept to eat the apple.");
+			botSays("Of course, she might not understand everything you say. She will give you a hint by interrupting you and changing subject.");
+			botSays("To put all chances on your side, keep your sentences simple and short.");
+			botSays("If you feel stuck, take notice of what she talks about, that might suggest relevant topics.");
+			botSays("You can also ask her questions. Try to understand what matters for her.");
+			botSays("After a while, Snow White will grow bored and send you on your way. The 'patience' bar will warn you of that coming.");
+			botSays("Click 'play' when you're ready.");
+			//Application.LoadLevel("test");
+			// Application.LoadLevel(0); // Application.LoadLevel("test"); // Alternatively, replace the scene's index number with the name of the scene
+		}	
+	}
+	else{
+		if (GUI.Button (Rect (tutorialButtonCoords.x * Screen.width / 1280, tutorialButtonCoords.y * Screen.height / 800, tutorialButtonCoords.width * Screen.width / 1280, tutorialButtonCoords.height * Screen.height / 800 ), "[RESTART]", buttonStyle))
+		{
+			Application.LoadLevel("test");
+			// Application.LoadLevel(0); // Application.LoadLevel("test"); // Alternatively, replace the scene's index number with the name of the scene
+		}		
+	}
 	// Progress Bars
 	GUI.Label (Rect (trustLabelCoords.x * Screen.width / 1280, trustLabelCoords.y * Screen.height / 800, trustLabelCoords.width * Screen.width / 1280, trustLabelCoords.height * Screen.height / 800 ), "TRUST", labelStyle);
 	GUI.Label (Rect (patienceLabelCoords.x * Screen.width / 1280, patienceLabelCoords.y * Screen.height / 800, patienceLabelCoords.width * Screen.width / 1280, patienceLabelCoords.height*Screen.height / 800 ), "PATIENCE", labelStyle);
